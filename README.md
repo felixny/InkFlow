@@ -4,58 +4,60 @@
 [![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0.0-blue.svg?logo=kotlin)](https://kotlinlang.org)
+[![CI](https://github.com/felixny/InkFlow/workflows/Build/badge.svg)](https://github.com/felixny/InkFlow/actions)
 
-> A beautiful Jetpack Compose UI library for creating fluid motion effects and animations.
+> A beautiful Jetpack Compose UI library for creating fluid motion effects and animations with organic ink bleed reveals.
 
 ## 📖 Description
 
-InkFlow is a modern Android library built with Jetpack Compose that provides elegant and performant fluid motion effects for your Android applications. Designed with AGSL (Android Graphics Shading Language) support, InkFlow uses advanced shaders on API 33+ (Android 13+) while gracefully falling back to alpha fade on older devices.
+InkFlow is a modern Android library built with Jetpack Compose that provides elegant and performant fluid motion effects for your Android applications. Designed with AGSL (Android Graphics Shading Language) support, InkFlow uses advanced procedural noise shaders on API 33+ (Android 13+) to create organic, non-uniform ink spread patterns while gracefully falling back to alpha fade on older devices.
 
 ## ✨ Features
 
-- 🎨 Beautiful fluid motion effects
-- 🚀 Built with Jetpack Compose
-- ⚡ Optimized for performance
-- 🎯 Easy to use and integrate
-- 📱 Modern Android development
+- 🎨 **Organic Ink Bleed Effects** - Procedural noise-based shaders create natural, fluid motion
+- 🚀 **Built with Jetpack Compose** - Modern declarative UI framework
+- ⚡ **Optimized Performance** - Shader caching and efficient rendering
+- 🎯 **Easy to Use** - Simple modifier API, works out of the box
+- 📱 **Cross-Platform Compatible** - API 24+ support with automatic fallbacks
+- 🎛️ **Highly Customizable** - Control speed, origin, noise, and edge properties
+- 📐 **Adaptive Design** - Automatic tablet optimization
 
 ## 🏗️ Installation
 
-### Gradle
+### Gradle (Kotlin DSL)
 
 Add the dependency to your `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.felixny:inkflow:VERSION")
+    implementation("com.felixny:inkflow:1.0.0")
 }
+```
+
+### Gradle (Groovy)
+
+Add the dependency to your `build.gradle`:
+
+```groovy
+dependencies {
+    implementation 'com.felixny:inkflow:1.0.0'
+}
+```
+
+### Maven
+
+Add the dependency to your `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>com.felixny</groupId>
+    <artifactId>inkflow</artifactId>
+    <version>1.0.0</version>
+    <type>aar</type>
+</dependency>
 ```
 
 ## 📝 Usage
-
-### Library Entry Point
-
-The `InkFlow` object provides access to library information and utilities:
-
-```kotlin
-import com.felixny.inkflow.InkFlow
-
-// Check if device supports AGSL shaders
-if (InkFlow.isAgslSupported()) {
-    // Device supports full ink bleed effect
-} else {
-    // Will use alpha fade fallback
-}
-
-// Get default configuration
-val defaultConfig = InkFlow.defaultConfig
-
-// Create optimized config for tablets
-val config = InkFlow.createOptimizedConfig(isTablet = true)
-
-// Access version information
-println("InkFlow version: ${InkFlow.VERSION_NAME}")
-```
 
 ### Basic Usage
 
@@ -63,7 +65,6 @@ Apply the `inkReveal` modifier to any composable to create an organic ink bleed 
 
 ```kotlin
 import com.felixny.inkflow.inkReveal
-import com.felixny.inkflow.InkFlowConfig
 
 @Composable
 fun MyCard() {
@@ -85,10 +86,15 @@ fun MyCard() {
 Customize the ink effect using `InkFlowConfig`:
 
 ```kotlin
+import com.felixny.inkflow.InkFlowConfig
+
 val config = InkFlowConfig(
     noiseScale = 3.0f,           // Controls noise detail (higher = more detail)
     distortionStrength = 0.15f,   // How much noise distorts the spread (0.0 to 1.0)
-    edgeSoftness = 0.15f         // Softness of the ink edge (0.0 to 1.0)
+    edgeSoftness = 0.15f,         // Softness of the ink edge (0.0 to 1.0)
+    centerX = 0.5f,               // X origin (0.0 = left, 0.5 = center, 1.0 = right)
+    centerY = 0.5f,               // Y origin (0.0 = top, 0.5 = center, 1.0 = bottom)
+    speedMultiplier = 1.0f        // Speed of spread (1.0 = normal, >1.0 = faster)
 )
 
 Card(
@@ -106,6 +112,10 @@ Card(
 Animate the reveal effect using `Animatable`:
 
 ```kotlin
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+import kotlinx.coroutines.launch
+
 @Composable
 fun AnimatedReveal() {
     var progress by remember { mutableFloatStateOf(0f) }
@@ -140,20 +150,41 @@ fun AnimatedReveal() {
 }
 ```
 
+### Predefined Positions
+
+Use convenience constants for common origin positions:
+
+```kotlin
+// Start from center (default)
+val config = InkFlowConfig.CENTER
+
+// Start from top center (like a dropdown)
+val config = InkFlowConfig.TOP_CENTER
+
+// Start from bottom center (like a bottom sheet)
+val config = InkFlowConfig.BOTTOM_CENTER
+
+// Start from corners
+val config = InkFlowConfig.TOP_LEFT
+val config = InkFlowConfig.BOTTOM_RIGHT
+
+// Apply with custom speed
+val config = InkFlowConfig.BOTTOM_CENTER.copy(speedMultiplier = 2.0f)
+```
+
 ### Adaptive Tablet Support
 
 Automatically adjust noise scale for tablets to prevent stretching:
 
 ```kotlin
+import androidx.compose.ui.platform.LocalConfiguration
+
 @Composable
 fun AdaptiveReveal() {
     val configuration = LocalConfiguration.current
     val isTablet = configuration.screenWidthDp >= 600
     
-    val noiseScale = if (isTablet) 5.0f else 3.0f
-    val config = remember(noiseScale) {
-        InkFlowConfig(noiseScale = noiseScale)
-    }
+    val config = InkFlow.createOptimizedConfig(isTablet = isTablet)
     
     Card(
         modifier = Modifier.inkReveal(
@@ -166,157 +197,95 @@ fun AdaptiveReveal() {
 }
 ```
 
-### Use Cases & Examples
+## 🔬 Technical Details
 
-The sample app includes 7 different use cases demonstrating various ways to use InkFlow:
+### AGSL Noise Approach
 
-#### 1. **Profile Card Reveal**
-Reveal profile information with ink bleed effect. Perfect for user profiles, cards, and information displays.
+InkFlow uses **procedural noise algorithms** implemented in AGSL (Android Graphics Shading Language) to create organic, non-uniform ink spread patterns. The implementation includes:
 
-```kotlin
-Card(
-    modifier = Modifier.inkReveal(progress = progress, config = config)
-) {
-    // Profile content
-}
-```
+#### Simplex Noise
+- A gradient noise function that produces smoother, more natural-looking patterns than Perlin noise
+- Provides better computational performance and visual quality
+- Used as the base for creating organic distortions
 
-#### 2. **Image Reveal**
-Animate image appearance with organic spread. Great for photo galleries, artwork, and visual content.
+#### Fractal Brownian Motion (FBM)
+- Combines multiple octaves of Simplex noise at different frequencies
+- Creates complex, natural-looking patterns with varying levels of detail
+- 4 octaves are used for optimal balance between detail and performance
 
-```kotlin
-Card(
-    modifier = Modifier
-        .fillMaxWidth()
-        .height(300.dp)
-        .inkReveal(progress = progress, config = config)
-) {
-    // Image content
-}
-```
+#### Distance-Based Distortion
+- Base distance calculation from the origin point
+- Noise-based distortion applied to create organic, non-circular spread
+- Configurable distortion strength allows fine-tuning of the effect
 
-#### 3. **Text Animation**
-Reveal text elements sequentially with staggered ink spread for dramatic effect.
+#### Shader Implementation
 
-```kotlin
-texts.forEachIndexed { index, text ->
-    var progress by remember { mutableFloatStateOf(0f) }
-    
-    Card(
-        modifier = Modifier.inkReveal(progress = progress, config = config)
-    ) {
-        Text(text = text)
-    }
-}
-```
+The shader works by:
+1. **Calculating base distance** from the configurable origin point
+2. **Applying noise distortion** to create organic variation
+3. **Normalizing distance** to create a 0-1 progress range
+4. **Applying smooth falloff** with configurable edge softness
+5. **Masking alpha** based on progress to reveal/hide content
 
-#### 4. **Button Press Effects**
-Add organic ink effects to button interactions for enhanced user feedback.
+This approach creates a fluid, organic ink spread that looks natural and avoids the mechanical appearance of simple geometric shapes.
 
-```kotlin
-Box(
-    modifier = Modifier.inkReveal(progress = progress, config = config)
-) {
-    Button(onClick = { /* trigger animation */ }) {
-        Text("Click Me")
-    }
-}
-```
+### Performance Optimizations
 
-#### 5. **Loading State**
-Show loading progress with organic ink reveal animation.
+- **Shader Caching**: RuntimeShader instances are cached using `remember()` to avoid recompilation
+- **Uniform Updates**: Only uniform values are updated during recomposition, not the shader code
+- **Efficient Rendering**: Uses Compose's graphicsLayer with RenderEffect for hardware acceleration
+- **Automatic Fallback**: API < 33 uses simple alpha fade (no shader overhead)
 
-```kotlin
-Card(
-    modifier = Modifier.inkReveal(progress = loadingProgress, config = config)
-) {
-    CircularProgressIndicator()
-    Text("Loading...")
-}
-```
+## 📋 API Reference
 
-#### 6. **Card Stack**
-Reveal stacked cards sequentially for a dramatic layered effect.
+### `Modifier.inkReveal()`
 
-```kotlin
-cards.forEachIndexed { index, card ->
-    Card(
-        modifier = Modifier
-            .offset(y = (index * 20).dp)
-            .inkReveal(progress = progress[index], config = config)
-    ) {
-        // Card content
-    }
-}
-```
+Applies an ink bleed reveal effect to a composable.
 
-#### 7. **Modal Dialog**
-Animate modal dialogs and bottom sheets with organic ink reveal.
+**Parameters:**
+- `progress: Float` - Reveal progress from 0.0 to 1.0 (automatically clamped)
+- `config: InkFlowConfig` - Optional configuration (defaults provided)
 
-```kotlin
-if (showModal) {
-    Card(
-        modifier = Modifier.inkReveal(progress = progress, config = config)
-    ) {
-        // Modal content
-    }
-}
-```
+**Returns:** A modifier that applies the ink bleed effect
 
-### Complete Example
+### `InkFlowConfig`
 
-```kotlin
-@Composable
-fun ProfileCardScreen() {
-    var progress by remember { mutableFloatStateOf(0f) }
-    val animatableProgress = remember { Animatable(0f) }
-    val coroutineScope = rememberCoroutineScope()
-    
-    // Tablet detection for adaptive scaling
-    val configuration = LocalConfiguration.current
-    val isTablet = configuration.screenWidthDp >= 600
-    val noiseScale = if (isTablet) 5.0f else 3.0f
-    val config = remember(noiseScale) {
-        InkFlowConfig(noiseScale = noiseScale)
-    }
-    
-    // Sync animatable with state
-    LaunchedEffect(animatableProgress.value) {
-        progress = animatableProgress.value
-    }
-    
-    Column {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(400.dp)
-                .inkReveal(progress = progress, config = config)
-        ) {
-            // Your card content
-        }
-        
-        Slider(
-            value = progress,
-            onValueChange = { newValue ->
-                progress = newValue
-                coroutineScope.launch {
-                    animatableProgress.snapTo(newValue)
-                }
-            }
-        )
-        
-        Button(
-            onClick = {
-                coroutineScope.launch {
-                    animatableProgress.animateTo(1f, tween(2000))
-                }
-            }
-        ) {
-            Text("Animate")
-        }
-    }
-}
-```
+Configuration class for customizing the ink reveal effect.
+
+**Properties:**
+- `noiseScale: Float` - Controls the scale of the noise pattern (default: `3.0f`)
+  - Higher values = more detail, better for larger screens/tablets
+  - Lower values = smoother, better for smaller screens
+- `distortionStrength: Float` - How much noise distorts the ink spread (default: `0.15f`, range: 0.0-1.0)
+- `edgeSoftness: Float` - Softness of the ink edge (default: `0.15f`, range: 0.0-1.0)
+- `centerX: Float` - X coordinate of flow origin (default: `0.5f`, range: 0.0-1.0)
+- `centerY: Float` - Y coordinate of flow origin (default: `0.5f`, range: 0.0-1.0)
+- `speedMultiplier: Float` - Speed of ink spread (default: `1.0f`, must be > 0)
+
+**Predefined Positions:**
+- `InkFlowConfig.CENTER` - Center (0.5, 0.5)
+- `InkFlowConfig.TOP_CENTER` - Top center (0.5, 0.0)
+- `InkFlowConfig.BOTTOM_CENTER` - Bottom center (0.5, 1.0)
+- `InkFlowConfig.LEFT_CENTER` - Left center (0.0, 0.5)
+- `InkFlowConfig.RIGHT_CENTER` - Right center (1.0, 0.5)
+- `InkFlowConfig.TOP_LEFT` - Top left (0.0, 0.0)
+- `InkFlowConfig.TOP_RIGHT` - Top right (1.0, 0.0)
+- `InkFlowConfig.BOTTOM_LEFT` - Bottom left (0.0, 1.0)
+- `InkFlowConfig.BOTTOM_RIGHT` - Bottom right (1.0, 1.0)
+
+### `InkFlow` Object
+
+Main entry point for the library.
+
+**Properties:**
+- `VERSION_NAME: String` - Library version name
+- `VERSION_CODE: Int` - Library version code
+- `MIN_AGSL_API: Int` - Minimum API level for AGSL support (33)
+- `defaultConfig: InkFlowConfig` - Default configuration instance
+
+**Functions:**
+- `isAgslSupported(): Boolean` - Checks if device supports AGSL shaders
+- `createOptimizedConfig(isTablet: Boolean): InkFlowConfig` - Creates optimized config for device type
 
 ## 🔧 API Compatibility
 
@@ -324,24 +293,57 @@ fun ProfileCardScreen() {
 - **API 24-32**: Automatically falls back to a simple alpha fade effect
 - The library handles API detection automatically - no additional code needed!
 
-## 📋 Parameters
+## 📱 Sample App
 
-### `inkReveal` Modifier
+The repository includes a comprehensive sample app (`:app` module) with 8 different use cases:
 
-- `progress: Float` - Reveal progress from 0.0 to 1.0 (automatically clamped)
-- `config: InkFlowConfig` - Optional configuration (defaults provided)
+1. **Profile Card** - Reveal profile information with ink bleed
+2. **Image Reveal** - Animate image appearance with organic spread
+3. **Text Animation** - Sequential text reveal with staggered effects
+4. **Button Press** - Interactive button with ink effect
+5. **Loading State** - Show loading progress with ink reveal
+6. **Card Stack** - Reveal stacked cards sequentially
+7. **Modal Dialog** - Animate modal appearance
+8. **Flow Control** - Test speed and origin position settings
 
-### `InkFlowConfig`
-
-- `noiseScale: Float` - Controls the scale of the noise pattern (default: `3.0f`)
-  - Higher values = more detail, better for larger screens/tablets
-  - Lower values = smoother, better for smaller screens
-- `distortionStrength: Float` - How much noise distorts the ink spread (default: `0.15f`, range: 0.0-1.0)
-- `edgeSoftness: Float` - Softness of the ink edge (default: `0.15f`, range: 0.0-1.0)
+Run the sample app to see all examples in action!
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome and greatly appreciated! Here's how you can help:
+
+### Getting Started
+
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Make your changes** and ensure code follows the project style
+4. **Add tests** if applicable
+5. **Commit your changes**: `git commit -m 'Add amazing feature'`
+6. **Push to the branch**: `git push origin feature/amazing-feature`
+7. **Open a Pull Request**
+
+### Code Style
+
+- Follow Kotlin coding conventions
+- Use meaningful variable and function names
+- Add KDoc documentation for public APIs
+- Ensure all public functions are properly documented
+- Write tests for new features
+
+### Reporting Issues
+
+If you find a bug or have a feature request, please open an issue on GitHub with:
+- Clear description of the problem/feature
+- Steps to reproduce (for bugs)
+- Expected vs actual behavior
+- Android version and device information (if applicable)
+
+### Pull Request Guidelines
+
+- Keep PRs focused and small when possible
+- Include tests for new functionality
+- Update documentation as needed
+- Ensure CI checks pass
 
 ## 📄 License
 
@@ -364,3 +366,13 @@ limitations under the License.
 ## 👤 Author
 
 **Felix Ny**
+
+## 🙏 Acknowledgments
+
+Inspired by the Skydoves library style and architecture.
+
+## 📚 Resources
+
+- [AGSL Documentation](https://developer.android.com/develop/ui/views/graphics/agsl)
+- [Jetpack Compose Graphics](https://developer.android.com/jetpack/compose/graphics)
+- [Android Graphics Shading Language](https://developer.android.com/develop/ui/views/graphics/agsl)

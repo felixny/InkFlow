@@ -13,13 +13,18 @@ import androidx.compose.runtime.Stable
 object InkFlow {
     
     /**
-     * Library version information.
+     * Library version name (e.g., "1.0.0").
      */
     const val VERSION_NAME = "1.0.0"
+    
+    /**
+     * Library version code (incremental integer).
+     */
     const val VERSION_CODE = 1
     
     /**
      * Minimum Android API level required for AGSL shader support.
+     * Devices below this API level will use the alpha fade fallback.
      */
     const val MIN_AGSL_API = 33
     
@@ -84,16 +89,57 @@ data class InkFlowConfig(
     
     companion object {
         /**
-         * Predefined center positions for convenience.
+         * Predefined configuration with center origin (0.5, 0.5).
+         * Use for standard reveal effects that start from the center.
          */
         val CENTER = InkFlowConfig(centerX = 0.5f, centerY = 0.5f)
+        
+        /**
+         * Predefined configuration with top center origin (0.5, 0.0).
+         * Ideal for dropdown menus and top-down reveals.
+         */
         val TOP_CENTER = InkFlowConfig(centerX = 0.5f, centerY = 0.0f)
+        
+        /**
+         * Predefined configuration with bottom center origin (0.5, 1.0).
+         * Perfect for bottom sheets and bottom-up reveals.
+         */
         val BOTTOM_CENTER = InkFlowConfig(centerX = 0.5f, centerY = 1.0f)
+        
+        /**
+         * Predefined configuration with left center origin (0.0, 0.5).
+         * Use for left-to-right reveal effects.
+         */
         val LEFT_CENTER = InkFlowConfig(centerX = 0.0f, centerY = 0.5f)
+        
+        /**
+         * Predefined configuration with right center origin (1.0, 0.5).
+         * Use for right-to-left reveal effects.
+         */
         val RIGHT_CENTER = InkFlowConfig(centerX = 1.0f, centerY = 0.5f)
+        
+        /**
+         * Predefined configuration with top left origin (0.0, 0.0).
+         * Use for corner-based reveal effects starting from top-left.
+         */
         val TOP_LEFT = InkFlowConfig(centerX = 0.0f, centerY = 0.0f)
+        
+        /**
+         * Predefined configuration with top right origin (1.0, 0.0).
+         * Use for corner-based reveal effects starting from top-right.
+         */
         val TOP_RIGHT = InkFlowConfig(centerX = 1.0f, centerY = 0.0f)
+        
+        /**
+         * Predefined configuration with bottom left origin (0.0, 1.0).
+         * Use for corner-based reveal effects starting from bottom-left.
+         */
         val BOTTOM_LEFT = InkFlowConfig(centerX = 0.0f, centerY = 1.0f)
+        
+        /**
+         * Predefined configuration with bottom right origin (1.0, 1.0).
+         * Use for corner-based reveal effects starting from bottom-right.
+         */
         val BOTTOM_RIGHT = InkFlowConfig(centerX = 1.0f, centerY = 1.0f)
     }
 }
