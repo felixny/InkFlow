@@ -7,9 +7,7 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0.0-blue.svg?logo=kotlin)](https://kotlinlang.org)
 [![CI](https://github.com/felixny/InkFlow/workflows/Build/badge.svg)](https://github.com/felixny/InkFlow/actions)
 
-<img src="inkflow-1.gif" width="300" alt="Demo 1"/>
-
-<img src="inkflow-2.gif" width="300" alt="Demo 2"/>
+<img src="inkflow-1.gif" width="300" alt="Demo 1"/> <img src="inkflow-2.gif" width="300" alt="Demo 2"/>
 
 > A beautiful Jetpack Compose UI library for creating fluid motion effects and animations with organic ink bleed reveals.
 
