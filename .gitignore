@@ -95,3 +95,6 @@ lint/tmp/
 
 # Kotlin coroutines
 kotlinx-coroutines-core/
+
+# GitHub
+.github/
