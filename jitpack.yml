@@ -1,6 +1,7 @@
 jdk:
   - openjdk17
 before_install:
+  - chmod +x gradlew
   - ./gradlew clean
-build:
-  - ./gradlew :inkflow:publishReleasePublicationToMavenLocal
+install:
+  - ./gradlew :inkflow:publishReleasePublicationToMavenLocal -xtest

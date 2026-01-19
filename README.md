@@ -25,6 +25,8 @@ InkFlow is a modern Android library built with Jetpack Compose that provides ele
 
 ## 🏗️ Installation
 
+**Note:** Requires JitPack and JDK 17+.
+
 ### JitPack (Recommended)
 
 Add JitPack repository to your `settings.gradle.kts` (or `settings.gradle`):
