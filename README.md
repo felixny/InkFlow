@@ -24,38 +24,53 @@ InkFlow is a modern Android library built with Jetpack Compose that provides ele
 
 ## 🏗️ Installation
 
-### Gradle (Kotlin DSL)
+### JitPack (Recommended)
 
-Add the dependency to your `build.gradle.kts`:
+Add JitPack repository to your `settings.gradle.kts` (or `settings.gradle`):
+
+```kotlin
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+```
+
+Or if using `settings.gradle` (Groovy):
+
+```groovy
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+Then add the dependency to your `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.felixny:inkflow:1.0.0")
+    implementation("com.github.felixny:InkFlow:1.0.0")
 }
 ```
 
-### Gradle (Groovy)
-
-Add the dependency to your `build.gradle`:
+Or in `build.gradle` (Groovy):
 
 ```groovy
 dependencies {
-    implementation 'com.felixny:inkflow:1.0.0'
+    implementation 'com.github.felixny:InkFlow:1.0.0'
 }
 ```
 
-### Maven
-
-Add the dependency to your `pom.xml`:
-
-```xml
-<dependency>
-    <groupId>com.felixny</groupId>
-    <artifactId>inkflow</artifactId>
-    <version>1.0.0</version>
-    <type>aar</type>
-</dependency>
-```
+**Note:** You can also use specific commit hashes or branch names:
+- `implementation("com.github.felixny:InkFlow:main-SNAPSHOT")` - Latest from main branch
+- `implementation("com.github.felixny:InkFlow:abc1234")` - Specific commit hash
 
 ## 📝 Usage
 
