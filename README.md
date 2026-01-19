@@ -367,10 +367,6 @@ limitations under the License.
 
 **Felix Ny**
 
-## 🙏 Acknowledgments
-
-Inspired by the Skydoves library style and architecture.
-
 ## 📚 Resources
 
 - [AGSL Documentation](https://developer.android.com/develop/ui/views/graphics/agsl)
