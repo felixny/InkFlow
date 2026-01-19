@@ -47,11 +47,11 @@ fun TextRevealScreen(
 ) {
     val texts = remember {
         listOf(
-            "Welcome",
-            "to",
-            "InkFlow",
-            "Beautiful animations",
-            "made simple"
+            "Welcome" to Color(0xFF667eea),
+            "to" to Color(0xFF764ba2),
+            "InkFlow" to Color(0xFFf093fb),
+            "Beautiful animations" to Color(0xFF4facfe),
+            "made simple" to Color(0xFF43e97b)
         )
     }
     
@@ -106,7 +106,7 @@ fun TextRevealScreen(
             Spacer(modifier = Modifier.height(16.dp))
             
             // Reveal each text with staggered animation
-            texts.forEachIndexed { index, text ->
+            texts.forEachIndexed { index, (text, color) ->
                 var progress by remember { mutableFloatStateOf(0f) }
                 
                 LaunchedEffect(progresses[index].value) {
@@ -119,19 +119,31 @@ fun TextRevealScreen(
                         .inkReveal(progress = progress, config = config),
                     shape = RoundedCornerShape(12.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.White.copy(alpha = 0.1f)
+                        containerColor = Color.Transparent
                     )
                 ) {
-                    Text(
-                        text = text,
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        textAlign = TextAlign.Center,
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(20.dp)
-                    )
+                            .background(
+                                Brush.horizontalGradient(
+                                    colors = listOf(
+                                        color,
+                                        color.copy(alpha = 0.8f)
+                                    )
+                                )
+                            )
+                            .padding(20.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = text,
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
             

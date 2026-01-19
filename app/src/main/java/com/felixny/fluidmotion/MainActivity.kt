@@ -13,6 +13,7 @@ import com.felixny.fluidmotion.examples.ButtonEffectScreen
 import com.felixny.fluidmotion.examples.CardStackScreen
 import com.felixny.fluidmotion.examples.ExampleScreen
 import com.felixny.fluidmotion.examples.ExampleType
+import com.felixny.fluidmotion.examples.FlowControlScreen
 import com.felixny.fluidmotion.examples.ImageRevealScreen
 import com.felixny.fluidmotion.examples.LoadingScreen
 import com.felixny.fluidmotion.examples.ModalRevealScreen
@@ -36,7 +37,7 @@ class MainActivity : ComponentActivity() {
 fun InkFlowExamplesApp() {
     var currentScreen by remember { mutableStateOf<Screen?>(null) }
     
-    when (val screen = currentScreen) {
+    when (currentScreen) {
         null -> {
             ExampleScreen(
                 onExampleSelected = { example ->
@@ -48,6 +49,7 @@ fun InkFlowExamplesApp() {
                         is ExampleType.LoadingState -> Screen.Loading
                         is ExampleType.CardStack -> Screen.CardStack
                         is ExampleType.ModalReveal -> Screen.Modal
+                        is ExampleType.FlowControl -> Screen.FlowControl
                     }
                 }
             )
@@ -87,15 +89,21 @@ fun InkFlowExamplesApp() {
                 onBack = { currentScreen = null }
             )
         }
+        is Screen.FlowControl -> {
+            FlowControlScreen(
+                onBack = { currentScreen = null }
+            )
+        }
     }
 }
 
 sealed class Screen {
-    object ProfileCard : Screen()
-    object ImageReveal : Screen()
-    object TextReveal : Screen()
-    object ButtonEffect : Screen()
-    object Loading : Screen()
-    object CardStack : Screen()
-    object Modal : Screen()
+    data object ProfileCard : Screen()
+    data object ImageReveal : Screen()
+    data object TextReveal : Screen()
+    data object ButtonEffect : Screen()
+    data object Loading : Screen()
+    data object CardStack : Screen()
+    data object Modal : Screen()
+    data object FlowControl : Screen()
 }

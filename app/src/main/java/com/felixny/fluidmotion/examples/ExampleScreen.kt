@@ -31,6 +31,7 @@ sealed class ExampleType(val title: String, val description: String) {
     object LoadingState : ExampleType("Loading State", "Show loading progress with ink reveal")
     object CardStack : ExampleType("Card Stack", "Reveal stacked cards one by one")
     object ModalReveal : ExampleType("Modal Dialog", "Animate modal appearance")
+    object FlowControl : ExampleType("Flow Control", "Test speed and origin position")
 }
 
 @Composable
@@ -44,7 +45,8 @@ fun ExampleScreen(
         ExampleType.ButtonEffect,
         ExampleType.LoadingState,
         ExampleType.CardStack,
-        ExampleType.ModalReveal
+        ExampleType.ModalReveal,
+        ExampleType.FlowControl
     )
 
     Box(

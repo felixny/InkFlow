@@ -32,7 +32,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.felixny.inkflow.InkFlow
-import com.felixny.inkflow.InkFlowConfig
 import com.felixny.inkflow.inkReveal
 import kotlinx.coroutines.launch
 

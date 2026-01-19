@@ -1,8 +1,8 @@
 package com.felixny.fluidmotion.examples
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,7 +36,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.felixny.inkflow.InkFlow
-import com.felixny.inkflow.InkFlowConfig
 import com.felixny.inkflow.inkReveal
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

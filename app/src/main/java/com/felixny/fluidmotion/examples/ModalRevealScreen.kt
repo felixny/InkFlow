@@ -1,8 +1,8 @@
 package com.felixny.fluidmotion.examples
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +35,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.felixny.inkflow.InkFlow
-import com.felixny.inkflow.InkFlowConfig
 import com.felixny.inkflow.inkReveal
 import kotlinx.coroutines.launch
 
@@ -161,43 +160,60 @@ fun ModalRevealScreen(
                         .inkReveal(progress = progress, config = config),
                     shape = RoundedCornerShape(24.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.White
+                        containerColor = Color.Transparent
                     ),
                     elevation = CardDefaults.cardElevation(defaultElevation = 16.dp)
                 ) {
-                    Column(
+                    // Add colorful gradient background to make ink reveal more visible
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                            .background(
+                                Brush.radialGradient(
+                                    colors = listOf(
+                                        Color(0xFF667eea),
+                                        Color(0xFF764ba2),
+                                        Color(0xFFf093fb)
+                                    ),
+                                    center = androidx.compose.ui.geometry.Offset(0f, 0f),
+                                    radius = 800f
+                                )
+                            )
                     ) {
-                        Text(
-                            text = "Modal Dialog",
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
-                        
-                        Text(
-                            text = "This modal appears with an organic ink reveal effect. Perfect for dialogs, bottom sheets, and overlays.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.Black.copy(alpha = 0.7f)
-                        )
-                        
-                        Spacer(modifier = Modifier.height(8.dp))
-                        
-                        Button(
-                            onClick = {
-                                coroutineScope.launch {
-                                    animatableProgress.animateTo(0f, tween(400))
-                                    kotlinx.coroutines.delay(400)
-                                    showModal = false
-                                }
-                            },
-                            modifier = Modifier.fillMaxWidth()
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            Text("Close")
+                            Text(
+                                text = "Modal Dialog",
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                            
+                            Text(
+                                text = "This modal appears with an organic ink reveal effect. Perfect for dialogs, bottom sheets, and overlays.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.White.copy(alpha = 0.9f)
+                            )
+                            
+                            Spacer(modifier = Modifier.height(8.dp))
+                            
+                            Button(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        animatableProgress.animateTo(0f, tween(400))
+                                        kotlinx.coroutines.delay(400)
+                                        showModal = false
+                                    }
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("Close")
+                            }
                         }
                     }
                 }

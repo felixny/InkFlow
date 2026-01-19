@@ -19,6 +19,9 @@ internal object InkShaders {
         uniform float noiseScale;
         uniform float distortionStrength;
         uniform float edgeSoftness;
+        uniform float centerX;
+        uniform float centerY;
+        uniform float speedMultiplier;
         
         // Simplex noise hash function
         float hash(vec2 p) {
@@ -66,7 +69,8 @@ internal object InkShaders {
             // In AGSL, we can sample to get dimensions, but for simplicity,
             // we'll use a relative coordinate system
             vec2 size = vec2(1000.0, 1000.0); // Default size, will be overridden by actual content
-            vec2 center = size * 0.5; // Center of the effect
+            // Use configurable center position (0.0 to 1.0, where 0.5 is center)
+            vec2 center = vec2(size.x * centerX, size.y * centerY);
             float maxRadius = length(size) * 0.7; // Maximum spread radius (diagonal)
             
             // Use relative coordinates for noise (0-1 range)
@@ -87,7 +91,9 @@ internal object InkShaders {
             
             // Create smooth falloff with progress using configurable edge softness
             // As progress increases from 0 to 1, the ink consumes more pixels
-            float threshold = progress * 1.1; // Slight overshoot for smoother edge
+            // Apply speed multiplier to control how fast the ink spreads
+            float adjustedProgress = progress * speedMultiplier;
+            float threshold = adjustedProgress * 1.1; // Slight overshoot for smoother edge
             float softness = edgeSoftness;
             float alpha = 1.0 - smoothstep(threshold - softness, threshold, normalizedDist);
             

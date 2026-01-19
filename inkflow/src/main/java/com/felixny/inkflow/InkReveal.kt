@@ -38,6 +38,9 @@ fun Modifier.inkReveal(
             shader.setFloatUniform("noiseScale", config.noiseScale)
             shader.setFloatUniform("distortionStrength", config.distortionStrength)
             shader.setFloatUniform("edgeSoftness", config.edgeSoftness)
+            shader.setFloatUniform("centerX", config.centerX)
+            shader.setFloatUniform("centerY", config.centerY)
+            shader.setFloatUniform("speedMultiplier", config.speedMultiplier)
             
             // Create render effect with the shader using RenderEffect.createRuntimeShaderEffect
             // The inputImage uniform will be automatically set by Compose

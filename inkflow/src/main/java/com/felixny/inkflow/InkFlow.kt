@@ -60,16 +60,40 @@ object InkFlow {
  * @param noiseScale Controls the scale of the noise pattern (higher = more detail)
  * @param distortionStrength Controls how much the noise distorts the ink spread (0.0 to 1.0)
  * @param edgeSoftness Controls the softness of the ink edge (0.0 to 1.0)
+ * @param centerX The X coordinate of the ink flow origin (0.0 to 1.0, where 0.5 is center)
+ * @param centerY The Y coordinate of the ink flow origin (0.0 to 1.0, where 0.5 is center)
+ * @param speedMultiplier Controls the speed of ink spread (1.0 = normal, >1.0 = faster, <1.0 = slower)
  */
 @Stable
 data class InkFlowConfig(
     val noiseScale: Float = 3.0f,
     val distortionStrength: Float = 0.15f,
-    val edgeSoftness: Float = 0.15f
+    val edgeSoftness: Float = 0.15f,
+    val centerX: Float = 0.5f, // Center by default
+    val centerY: Float = 0.5f, // Center by default
+    val speedMultiplier: Float = 1.0f // Normal speed by default
 ) {
     init {
         require(noiseScale > 0f) { "noiseScale must be positive" }
         require(distortionStrength in 0f..1f) { "distortionStrength must be between 0 and 1" }
         require(edgeSoftness in 0f..1f) { "edgeSoftness must be between 0 and 1" }
+        require(centerX in 0f..1f) { "centerX must be between 0 and 1" }
+        require(centerY in 0f..1f) { "centerY must be between 0 and 1" }
+        require(speedMultiplier > 0f) { "speedMultiplier must be positive" }
+    }
+    
+    companion object {
+        /**
+         * Predefined center positions for convenience.
+         */
+        val CENTER = InkFlowConfig(centerX = 0.5f, centerY = 0.5f)
+        val TOP_CENTER = InkFlowConfig(centerX = 0.5f, centerY = 0.0f)
+        val BOTTOM_CENTER = InkFlowConfig(centerX = 0.5f, centerY = 1.0f)
+        val LEFT_CENTER = InkFlowConfig(centerX = 0.0f, centerY = 0.5f)
+        val RIGHT_CENTER = InkFlowConfig(centerX = 1.0f, centerY = 0.5f)
+        val TOP_LEFT = InkFlowConfig(centerX = 0.0f, centerY = 0.0f)
+        val TOP_RIGHT = InkFlowConfig(centerX = 1.0f, centerY = 0.0f)
+        val BOTTOM_LEFT = InkFlowConfig(centerX = 0.0f, centerY = 1.0f)
+        val BOTTOM_RIGHT = InkFlowConfig(centerX = 1.0f, centerY = 1.0f)
     }
 }
